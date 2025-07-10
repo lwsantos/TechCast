@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  techcast-api:
+    build: .
+    ports:
+      - "3100:3100"
+    volumes:
+      # Montar diretório de saída para persistir dados
+      - ./output:/app/output
+      # Montar arquivo .env para facilitar configuração
+      - ./.env:/app/.env
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s 

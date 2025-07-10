@@ -1,0 +1,71 @@
+{
+  "name": "techcrunch-scraper",
+  "version": "1.0.0",
+  "description": "Web scraper para extrair notícias do TechCrunch",
+  "main": "dist/scraper.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/api-index.js",
+    "scraper": "ts-node src/scraper-index.ts",
+    "watch": "tsc --watch",
+    "clean": "rm -rf dist",
+    "translate": "ts-node src/translator-index.ts",
+    "podcast": "ts-node src/podcast-generator-index.ts",
+    "audio": "ts-node src/audio-generator-index.ts",
+    "video": "ts-node src/merge-audio-image-index.ts",
+    "pipeline": "ts-node src/full-pipeline.ts",
+    "token": "ts-node src/get_refresh_token.ts",
+    "upload": "ts-node src/upload_to_youtube_index.ts",
+    "api": "ts-node src/api-index.ts",
+    "docker:build": "./scripts/docker-helper.sh build",
+    "docker:up": "./scripts/docker-helper.sh up -d",
+    "docker:down": "./scripts/docker-helper.sh down",
+    "docker:logs": "./scripts/docker-helper.sh logs -f",
+    "docker:setup": "./scripts/docker-setup.sh",
+    "docker:restart": "./scripts/docker-helper.sh restart",
+    "docker:shell": "./scripts/docker-helper.sh exec techcast-api sh"
+  },
+  "keywords": [
+    "scraper",
+    "techcrunch",
+    "web-scraping",
+    "typescript",
+    "nodejs"
+  ],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "dependencies": {
+    "@google-cloud/text-to-speech": "^6.1.0",
+    "@google-cloud/translate": "^8.0.0",
+    "@google/genai": "^1.8.0",
+    "@google/generative-ai": "^0.21.0",
+    "axios": "^1.10.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
+    "express": "^5.1.0",
+    "google-auth-library": "^10.1.0",
+    "googleapis": "^150.0.1",
+    "helmet": "^8.1.0",
+    "mime": "^4.0.7",
+    "morgan": "^1.10.0",
+    "node-cron": "^4.2.0",
+    "open": "^10.1.2",
+    "playwright": "^1.53.2",
+    "readline": "^1.3.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/helmet": "^0.0.48",
+    "@types/mime": "^3.0.4",
+    "@types/morgan": "^1.9.10",
+    "@types/node": "^20.19.6",
+    "@types/node-cron": "^3.0.11",
+    "@types/open": "^6.1.0",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.0.0"
+  }
+}
