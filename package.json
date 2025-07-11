@@ -23,7 +23,10 @@
     "docker:logs": "./scripts/docker-helper.sh logs -f",
     "docker:setup": "./scripts/docker-setup.sh",
     "docker:restart": "./scripts/docker-helper.sh restart",
-    "docker:shell": "./scripts/docker-helper.sh exec techcast-api sh"
+    "docker:shell": "./scripts/docker-helper.sh exec techcast-api sh",
+    "docker:rebuild": "./scripts/docker-rebuild.sh",
+    "docker:test": "./scripts/test-playwright.sh",
+    "docker:scraper": "./scripts/test-scraper.sh"
   },
   "keywords": [
     "scraper",
