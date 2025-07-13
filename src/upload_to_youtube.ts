@@ -126,8 +126,8 @@ class YouTubeUploader {
     
     const metadata: VideoMetadata = {
       snippet: {
-        title: `TechCast: Notícias do dia ${dateString}`,
-        description: `Seu resumo diário das notícias de tecnologia mais importantes do TechCrunch. (https://techcrunch.com)
+        title: `TechCast: Notícias do dia ${dateString} feito por uma IA`,
+        description: `Seu resumo diário das notícias de tecnologia mais importantes do TechCrunch e Gizmodo. (https://techcrunch.com, https://gizmodo.com)
 
 📰 Principais tópicos de hoje:
 • Notícias mais recentes do mundo da tecnologia
@@ -139,10 +139,11 @@ class YouTubeUploader {
 
 🔗 Siga-nos para mais conteúdo de tecnologia!
 
-#TechCast #TechCrunch #Podcast #Tecnologia #NotíciasTech #IA #Startup #DailyTechNews`,
+#TechCast #TechCrunch #Gizmodo #Podcast #Tecnologia #NotíciasTech #IA #Startup #DailyTechNews`,
         tags: [
           'TechCast',
           'TechCrunch', 
+          'Gizmodo',
           'Podcast',
           'Tecnologia',
           'Notícias Tech',
