@@ -15,14 +15,14 @@ router.get('/execute', async (req, res) => {
     const pipeline = new FullPipeline();
     
     // Executar o pipeline
-    await pipeline.run();
+    pipeline.run();
 
     res.json({
       success: true,
-      message: 'Pipeline completo executado com sucesso!',
+      message: 'Pipeline em andamento...',
       data: {
         timestamp: new Date().toISOString(),
-        status: 'completed',
+        status: 'in-progress',
         steps: [
           'scraping',
           'translation',
