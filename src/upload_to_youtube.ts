@@ -3,6 +3,7 @@ import { OAuth2Client } from 'google-auth-library';
 import * as fs from 'fs';
 import * as path from 'path';
 import { sendTelegramMessage } from './telegram-provider';
+import { getTodayISODate, getTodayDisplayDate } from './utils/date-helper';
 
 interface YouTubeCredentials {
   installed: {
@@ -95,8 +96,7 @@ class YouTubeUploader {
    * Obtém o caminho do arquivo de vídeo baseado na data atual
    */
   private getVideoPath(): string {
-    const today = new Date();
-    const dateString = today.toISOString().split('T')[0]; // YYYY-MM-DD
+    const dateString = getTodayISODate();
     const videoPath = path.join(__dirname, '..', 'output', 'video', `podcast_video_${dateString}.mp4`);
     
     console.log(`🎬 Procurando vídeo: ${videoPath}`);
@@ -122,8 +122,7 @@ class YouTubeUploader {
    * Cria os metadados do vídeo
    */
   private createVideoMetadata(): VideoMetadata {
-    const today = new Date();
-    const dateString = today.toLocaleDateString('pt-BR');
+    const dateString = getTodayDisplayDate();
     
     const metadata: VideoMetadata = {
       snippet: {

@@ -3,11 +3,7 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { Article, ArticleInfo, ScraperConfig } from './types';
 import { sendTelegramMessage } from './telegram-provider';
-
-function getTodayISODate(): string {
-  const now = new Date();
-  return now.toISOString().split('T')[0];
-}
+import { getTodayISODate, getTimezone, isToday } from './utils/date-helper';
 
 class TechCrunchScraper {
   private baseUrl: string;
@@ -80,7 +76,6 @@ class TechCrunchScraper {
     
     const articleLinks = await this.page.evaluate(() => {
       const links: ArticleInfo[] = [];
-      const today = new Date().toISOString().split('T')[0];
       
       // Seletores para encontrar artigos na página inicial
       const selectors = [
@@ -172,15 +167,27 @@ class TechCrunchScraper {
             '.river-byline__time'
           ];
           let dataPublicacao = '';
+          let originalDatetime = '';
           for (const selector of dateSelectors) {
             const element = document.querySelector(selector);
             if (element) {
               const datetime = element.getAttribute('datetime') || element.textContent;
               if (datetime) {
-                // Extrair apenas a data (YYYY-MM-DD)
-                const dateMatch = datetime.match(/\d{4}-\d{2}-\d{2}/);
+                originalDatetime = datetime;
+                // Tentar extrair data de diferentes formatos
+                let dateMatch = datetime.match(/\d{4}-\d{2}-\d{2}/);
                 if (dateMatch) {
                   dataPublicacao = dateMatch[0];
+                  break;
+                }
+                // Se não encontrou, tentar converter timestamp ou outras datas
+                const date = new Date(datetime);
+                if (!isNaN(date.getTime())) {
+                  // Usar o helper para formatar a data
+                  const year = date.getFullYear();
+                  const month = String(date.getMonth() + 1).padStart(2, '0');
+                  const day = String(date.getDate()).padStart(2, '0');
+                  dataPublicacao = `${year}-${month}-${day}`;
                   break;
                 }
               }
@@ -256,15 +263,21 @@ class TechCrunchScraper {
             conteudo = fallbackParagraphs.join(' ');
           }
           
-          return { titulo, dataPublicacao, autor, conteudo };
+          return { titulo, dataPublicacao, autor, conteudo, originalDatetime };
         });
         
         // Verificar se é um artigo de hoje
         const today = getTodayISODate();
-        if (articleData.dataPublicacao !== today) {
+        console.log(`📅 Comparando: artigo (${articleData.dataPublicacao}) vs hoje (${today})`);
+        console.log(`🔍 Datetime original: ${articleData.originalDatetime}`);
+        
+        // Usar o helper para verificar se é de hoje (não recente)
+        if (!isToday(articleData.dataPublicacao)) {
           console.log(`⏰ Artigo não é de hoje (${articleData.dataPublicacao}), pulando...`);
           return null;
         }
+        
+        console.log(`✅ Artigo aceito: ${articleData.dataPublicacao} (de hoje)`);
         
         return {
           titulo: articleData.titulo || articleInfo.title,
@@ -293,7 +306,10 @@ class TechCrunchScraper {
 
   public async run(): Promise<void> {
     try {
+      const today = getTodayISODate();
       console.log('🎯 Iniciando scraper do TechCrunch com Playwright...');
+      console.log(`📅 Buscando artigos da data: ${today}`);
+      console.log(`🔍 Timezone configurado: ${getTimezone()}`);
       await sendTelegramMessage('🚀 *Scraping de notícias iniciado...*');
       
       await this.initializeBrowser();
@@ -349,7 +365,7 @@ class TechCrunchScraper {
     await fs.mkdir(outputDir, { recursive: true });
     
     const output = {
-      dataColeta: new Date().toISOString(),
+      dataColeta: new Date().toISOString(), // Mantido como ISO para timestamp
       totalArtigos: this.articles.length,
       artigos: this.articles
     };

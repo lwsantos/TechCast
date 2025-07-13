@@ -4,6 +4,7 @@ import * as fsSync from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
 import { sendTelegramMessage } from './telegram-provider';
+import { getTodayISODate } from './utils/date-helper';
 
 // Carregar variáveis de ambiente
 dotenv.config();
@@ -80,7 +81,7 @@ class TechCrunchTranslator {
 
   private async loadArticles(): Promise<Article[]> {
     try {
-      const today = new Date().toISOString().split('T')[0];
+      const today = getTodayISODate();
       const inputPath = path.join(process.cwd(), 'output', 'news', `news_${today}.json`);
       console.log(`📖 Carregando artigos de: ${inputPath}`);
       
@@ -100,7 +101,7 @@ class TechCrunchTranslator {
 
   private async saveTranslatedArticles(articles: TranslatedArticle[]): Promise<void> {
     try {
-      const today = new Date().toISOString().split('T')[0];
+      const today = getTodayISODate();
       const outputPath = path.join(process.cwd(), 'output', 'news', `news_${today}.json`);
       console.log(`💾 Salvando artigos traduzidos em: ${outputPath}`);
       

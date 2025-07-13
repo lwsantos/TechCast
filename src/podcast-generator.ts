@@ -3,6 +3,7 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
 import { sendTelegramMessage } from './telegram-provider';
+import { getTodayISODate, getTodayPromptDate } from './utils/date-helper';
 
 // Carregar variáveis de ambiente
 dotenv.config();
@@ -39,7 +40,7 @@ class PodcastGenerator {
 
   private async loadArticles(): Promise<TranslatedArticle[]> {
     try {
-      const today = new Date().toISOString().split('T')[0];
+      const today = getTodayISODate();
       const inputPath = path.join(process.cwd(), 'output', 'news', `news_${today}.json`);
       console.log(`📖 Carregando artigos de: ${inputPath}`);
       
@@ -63,7 +64,7 @@ class PodcastGenerator {
   }
 
   private buildPrompt(articles: TranslatedArticle[]): string {
-    const today = new Date().toLocaleDateString('pt-BR', { year: 'numeric', month: '2-digit', day: '2-digit' }); // Formato DD/MM/AAAA para consistência com o roteiro
+    const today = getTodayPromptDate();
 
     let prompt = `Você é um roteirista de podcast de notícias de tecnologia. Crie um roteiro de podcast em português do Brasil para dois apresentadores (uma mulher como apresentadora 1 e um homem como apresentador 2) que discutirão as notícias mais recentes do site TechCrunch de ${today}.
 
@@ -152,7 +153,7 @@ Apresentador 2: Tchau, tchau!
 
   private async savePodcastScript(script: string): Promise<void> {
     try {
-      const today = new Date().toISOString().split('T')[0];
+      const today = getTodayISODate();
       const fileName = `roteiro_podcast_${today}.txt`;
       const outputPath = path.join(process.cwd(), 'output', 'roteiro', fileName);
       
