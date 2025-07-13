@@ -30,6 +30,10 @@ RUN npm run build
 # Production stage
 FROM node:22-slim AS production
 
+# Configurar timezone para São Paulo
+ENV TZ=America/Sao_Paulo
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
 # Instalar FFmpeg e dependências do Playwright
 RUN apt-get update && apt-get install -y \
     ffmpeg \

@@ -93,6 +93,15 @@ export function setupCronJob(): void {
     // Criar expressão cron dinâmica baseada nas configurações
     const cronExpression = `${cronMinute} ${cronHour} * * *`;
     
+    // Debug: Mostrar informações de timezone
+    console.log(`🌍 ==========================================`);
+    console.log(`🌍 CONFIGURAÇÃO DE TIMEZONE`);
+    console.log(`🌍 CRON_TIMEZONE: ${CRON_TIMEZONE}`);
+    console.log(`🌍 TZ (env): ${process.env.TZ || 'não definido'}`);
+    console.log(`🌍 Data/hora atual (UTC): ${new Date().toISOString()}`);
+    console.log(`🌍 Data/hora atual (São Paulo): ${new Date().toLocaleString('pt-BR', { timeZone: CRON_TIMEZONE })}`);
+    console.log(`🌍 ==========================================`);
+    
     // Agendar execução no horário configurado
     cron.schedule(cronExpression, runPipeline, {
       timezone: CRON_TIMEZONE

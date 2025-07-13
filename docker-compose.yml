@@ -10,6 +10,8 @@ services:
       - ./.env:/app/.env
     environment:
       - NODE_ENV=production
+      - TZ=America/Sao_Paulo
+      - CRON_TIMEZONE=America/Sao_Paulo
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3100/health"]
