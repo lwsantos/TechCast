@@ -1,4 +1,5 @@
 import { TechCrunchScraper } from './scraper';
+import { GizmodoScraper } from './scraper_gizmodo';
 import { TechCrunchTranslator } from './translator';
 import { PodcastGenerator } from './podcast-generator';
 import { AudioGenerator } from './audio-generator';
@@ -11,6 +12,7 @@ dotenv.config();
 
 class FullPipeline {
   private scraper: TechCrunchScraper;
+  private scraperGizmodo: GizmodoScraper;
   private translator: TechCrunchTranslator;
   private podcastGenerator: PodcastGenerator;
   private audioGenerator: AudioGenerator;
@@ -22,6 +24,11 @@ class FullPipeline {
         maxArticles: 50, // Limitar a 50 artigos
         delay: 3000, // 3 segundos entre requisições
         timeout: 30000 // 30 segundos de timeout
+    });
+    this.scraperGizmodo = new GizmodoScraper({
+      maxArticles: 50, // Limitar a 50 artigos
+      delay: 3000, // 3 segundos entre requisições
+      timeout: 30000 // 30 segundos de timeout
     });
     this.translator = new TechCrunchTranslator();
     this.podcastGenerator = new PodcastGenerator();
@@ -39,6 +46,11 @@ class FullPipeline {
       await this.scraper.run();
       const articles = this.scraper.getArticles();
       console.log(`✅ ${articles.length} artigos extraídos com sucesso!\n`);
+
+      console.log('📰 Etapa 1: Extraindo notícias do Gizmodo...');
+      await this.scraperGizmodo.run();
+      const articlesGizmodo = this.scraperGizmodo.getArticles();
+      console.log(`✅ ${articlesGizmodo.length} artigos extraídos com sucesso!\n`);
 
       // Etapa 2: Tradução
       console.log('🌐 Etapa 2: Traduzindo artigos para português...');

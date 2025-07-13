@@ -66,21 +66,24 @@ class PodcastGenerator {
   private buildPrompt(articles: TranslatedArticle[]): string {
     const today = getTodayPromptDate();
 
-    let prompt = `Você é um roteirista de podcast de notícias de tecnologia. Crie um roteiro de podcast em português do Brasil para dois apresentadores (uma mulher como apresentadora 1 e um homem como apresentador 2) que discutirão as notícias mais recentes do site TechCrunch de ${today}.
+    let prompt = `Você é um roteirista de podcast de notícias de tecnologia. Crie um roteiro de podcast em português do Brasil para dois apresentadores (uma mulher como apresentadora 1 e um homem como apresentador 2) que discutirão as notícias mais recentes dos sites **TechCrunch e Gizmodo** de ${today}.
+
+**INSTRUÇÕES DE CONSOLIDAÇÃO:**
+Analise as notícias fornecidas abaixo. Se houver notícias sobre o MESMO TÓPICO ou TÓPICOS MUITO RELACIONADOS (por exemplo, várias notícias sobre IA, lançamentos de produtos da mesma empresa, ou regulamentação de criptomoedas), você deve **agrupá-las** e discuti-las como um **único segmento** no roteiro. O objetivo é criar uma discussão coesa sobre o tema, em vez de discutir cada artigo individualmente.
 
 **ESTRUTURA DO ROTEIRO:**
 
 1.  **INTRODUÇÃO (30-45 segundos):**
     -   Os apresentadores dão as boas-vindas.
-    -   Explicam que o episódio é sobre as notícias do dia do TechCrunch de ${today}.
+    -   Explicam que o episódio é sobre as notícias do dia dos sites TechCrunch e Gizmodo de ${today}.
     -   Tom descontraído e amigável.
 
-2.  **DISCUSSÃO DAS NOTÍCIAS:**
-    -   Para cada notícia, os apresentadores alternam falas.
-    -   O apresentador geralmente apresenta a notícia.
+2.  **DISCUSSÃO DOS TÓPICOS CONSOLIDADOS:**
+    -   Para cada tópico consolidado (ou notícia individual, se não houver similaridade), os apresentadores alternam falas.
+    -   O apresentador geralmente apresenta o tópico.
     -   O outro apresentador comenta e adiciona contexto/impacto.
     -   A conversa deve ser dinâmica, como dois amigos discutindo tecnologia.
-    -   Cada notícia deve ter 1-2 minutos de discussão.
+    -   Cada segmento de discussão (tópico consolidado) deve ter 1-2 minutos.
 
 3.  **ENCERRAMENTO (15-20 segundos):**
     -   Agradecimentos e convite para o próximo episódio.
@@ -92,11 +95,11 @@ class PodcastGenerator {
 -   Evitar linguagem muito técnica.
 -   Manter o interesse do ouvinte.
 
-**NOTÍCIAS DO DIA DO TECHCRUNCH:**
+**NOTÍCIAS DO DIA:** // Alterado o cabeçalho para ser mais genérico
 
 `;
 
-    // Adicionar cada notícia ao prompt
+    // Adicionar cada notícia ao prompt (aqui elas ainda estão separadas, mas a instrução acima pede a consolidação)
     articles.forEach((article, index) => {
       prompt += `---
 NOTÍCIA ${index + 1}:
@@ -111,12 +114,12 @@ Data: ${article.dataPublicacao}
     prompt += `**FORMATO DE SAÍDA ESPERADO:**
 
 Apresentador 1: Olá, pessoal! Sejam muito bem-vindos ao nosso bate-papo diário sobre tecnologia!
-Apresentador 2: É isso mesmo! E hoje vamos mergulhar nas notícias mais quentes do dia, direto do TechCrunch de ${today}.
-Apresentador 1: Para começar, temos uma notícia super interessante sobre [TÍTULO DA NOTÍCIA 1]. O que você achou disso?
-Apresentador 2: Essa é realmente fascinante! [COMENTÁRIO SOBRE A NOTÍCIA 1]. O que me chamou a atenção foi [DETALHE/IMPACTO]!
+Apresentador 2: É isso mesmo! E hoje vamos mergulhar nas notícias mais quentes do dia, direto dos sites TechCrunch e Gizmodo de ${today}. // Alterado no exemplo de saída
+Apresentador 1: Para começar, temos um tópico super interessante sobre [TÓPICO CONSOLIDADO 1]. O que você achou disso?
+Apresentador 2: Essa é realmente fascinante! [COMENTÁRIO SOBRE O TÓPICO 1, INCLUINDO DETALHES DE DIVERSAS NOTÍCIAS RELACIONADAS]. O que me chamou a atenção foi [DETALHE/IMPACTO]!
 Apresentador 1: Sim, e isso pode significar [CONSEQUÊNCIA/ANÁLISE]. Agora vamos para a próxima...
-Apresentador 2: [TÍTULO DA NOTÍCIA 2] é outra que está dando o que falar...
-[... continuar para todas as notícias ...]
+Apresentador 2: [TÓPICO CONSOLIDADO 2] é outra que está dando o que falar...
+[... continuar para todos os tópicos/notícias ...]
 
 Apresentador 1: Bom, por hoje é só, pessoal!
 Apresentador 2: Exato! Não esqueçam de nos acompanhar amanhã para mais novidades do mundo da tecnologia!
@@ -127,7 +130,7 @@ Apresentador 2: Tchau, tchau!
 -   Mantenha o formato exato com "Apresentador 1:" e "Apresentador 2:" no início de cada fala.
 -   Não use marcadores ou numeração na parte do diálogo.
 -   Faça a conversa fluir naturalmente.
--   Inclua TODAS as notícias fornecidas.
+-   Inclua TODAS as notícias fornecidas, mas agrupadas por tema quando apropriado.
 -   Mantenha o tom descontraído e envolvente.
 -   A saída deve ser texto puro, sem formatação Markdown adicional para o roteiro final.
 `;

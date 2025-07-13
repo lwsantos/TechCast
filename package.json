@@ -7,7 +7,9 @@
     "build": "tsc",
     "start": "ts-node src/api-index.ts",
     "pipeline": "ts-node src/full-pipeline.ts",
-    "scraper": "ts-node src/scraper-index.ts",
+    "scraper:techcrunch": "ts-node src/scraper-index.ts",
+    "scraper:gizmodo": "ts-node src/scraper-gizmodo-index.ts",
+    "scraper:all": "ts-node src/scrapers-index.ts",
     "translate": "ts-node src/translator-index.ts",
     "podcast": "ts-node src/podcast-generator-index.ts",
     "audio": "ts-node src/audio-generator-index.ts",
@@ -25,7 +27,8 @@
     "docker:shell": "./scripts/docker-helper.sh exec techcast-api sh",
     "docker:rebuild": "./scripts/docker-rebuild.sh",
     "docker:test": "./scripts/test-playwright.sh",
-    "docker:scraper": "./scripts/test-scraper.sh"
+    "docker:scraper": "./scripts/test-scraper.sh",
+    "test:scrapers": "./scripts/test-all-scrapers.sh"
   },
   "keywords": [
     "scraper",

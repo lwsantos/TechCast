@@ -310,7 +310,7 @@ class TechCrunchScraper {
       console.log('🎯 Iniciando scraper do TechCrunch com Playwright...');
       console.log(`📅 Buscando artigos da data: ${today}`);
       console.log(`🔍 Timezone configurado: ${getTimezone()}`);
-      await sendTelegramMessage('🚀 *Scraping de notícias iniciado...*');
+      await sendTelegramMessage('🚀 *Scraping do TechCrunch iniciado...*');
       
       await this.initializeBrowser();
       
@@ -345,7 +345,7 @@ class TechCrunchScraper {
       await this.saveResults();
       
       console.log(`🎉 Scraping concluído! ${this.articles.length} artigos coletados.`);
-      await sendTelegramMessage(`🎉 Scraping concluído! ${this.articles.length} artigos coletados.`);
+      await sendTelegramMessage(`🎉 Scraping do TechCrunch concluído! ${this.articles.length} artigos coletados.`);
 
     } catch (error) {
       console.error('❌ Erro durante o scraping:', error);
