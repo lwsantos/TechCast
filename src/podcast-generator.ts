@@ -80,10 +80,10 @@ Analise as notícias fornecidas abaixo. Se houver notícias sobre o MESMO TÓPIC
 
 2.  **DISCUSSÃO DOS TÓPICOS CONSOLIDADOS:**
     -   Para cada tópico consolidado (ou notícia individual, se não houver similaridade), os apresentadores alternam falas.
-    -   O apresentador geralmente apresenta o tópico.
-    -   O outro apresentador comenta e adiciona contexto/impacto.
+    -   O apresentador geralmente apresenta o tópico, **incluindo os fatos mais relevantes e um breve histórico se necessário.**
+    -   O outro apresentador comenta e adiciona contexto/impacto, **aprofundando-se nos detalhes chave, nas implicações para o mercado ou usuários, e possíveis desdobramentos futuros. Traga insights e uma análise mais aprofundada baseada nas informações do conteúdo fornecido.**
     -   A conversa deve ser dinâmica, como dois amigos discutindo tecnologia.
-    -   Cada segmento de discussão (tópico consolidado) deve ter 1-2 minutos.
+    -   Cada segmento de discussão (tópico consolidado) deve ter 1-2 minutos de duração, **permitindo aprofundamento.**
 
 3.  **ENCERRAMENTO (15-20 segundos):**
     -   Agradecimentos e convite para o próximo episódio.
@@ -95,7 +95,7 @@ Analise as notícias fornecidas abaixo. Se houver notícias sobre o MESMO TÓPIC
 -   Evitar linguagem muito técnica.
 -   Manter o interesse do ouvinte.
 
-**NOTÍCIAS DO DIA:** // Alterado o cabeçalho para ser mais genérico
+**NOTÍCIAS DO DIA:**
 
 `;
 
@@ -114,12 +114,12 @@ Data: ${article.dataPublicacao}
     prompt += `**FORMATO DE SAÍDA ESPERADO:**
 
 Apresentador 1: Olá, pessoal! Sejam muito bem-vindos ao nosso bate-papo diário sobre tecnologia!
-Apresentador 2: É isso mesmo! E hoje vamos mergulhar nas notícias mais quentes do dia, direto dos sites TechCrunch e Gizmodo de ${today}. // Alterado no exemplo de saída
-Apresentador 1: Para começar, temos um tópico super interessante sobre [TÓPICO CONSOLIDADO 1]. O que você achou disso?
-Apresentador 2: Essa é realmente fascinante! [COMENTÁRIO SOBRE O TÓPICO 1, INCLUINDO DETALHES DE DIVERSAS NOTÍCIAS RELACIONADAS]. O que me chamou a atenção foi [DETALHE/IMPACTO]!
-Apresentador 1: Sim, e isso pode significar [CONSEQUÊNCIA/ANÁLISE]. Agora vamos para a próxima...
-Apresentador 2: [TÓPICO CONSOLIDADO 2] é outra que está dando o que falar...
-[... continuar para todos os tópicos/notícias ...]
+Apresentador 2: É isso mesmo! E hoje vamos mergulhar nas notícias mais quentes do dia, direto dos sites TechCrunch e Gizmodo de ${today}.
+Apresentador 1: Para começar, temos um tópico super interessante sobre [TÓPICO CONSOLIDADO 1 - apresente o básico da notícia, os fatos centrais]. O que você achou disso?
+Apresentador 2: Essa é realmente fascinante! [COMENTÁRIO SOBRE O TÓPICO 1, INCLUINDO DETALHES IMPORTANTES DAS NOTÍCIAS RELACIONADAS, IMPLICAÇÕES, E UMA ANÁLISE MAIS APROFUNDADA. EX: 'O que me chamou a atenção foi AQUELE DETALHE ESPECÍFICO que o artigo mencionou...' ou 'Isso pode significar X para o mercado por causa de Y...']!
+Apresentador 1: Sim, e isso pode significar [CONSEQUÊNCIA/ANÁLISE ADICIONAL baseada em detalhes]. Agora vamos para a próxima...
+Apresentador 2: [TÓPICO CONSOLIDADO 2 - apresente os fatos centrais da notícia/tópico]. Essa também é uma que promete bastante...
+[... continuar para todos os tópicos/notícias, garantindo mais detalhes e análises nas falas dos apresentadores ...]
 
 Apresentador 1: Bom, por hoje é só, pessoal!
 Apresentador 2: Exato! Não esqueçam de nos acompanhar amanhã para mais novidades do mundo da tecnologia!
@@ -128,6 +128,7 @@ Apresentador 2: Tchau, tchau!
 
 **INSTRUÇÕES FINAIS:**
 -   Mantenha o formato exato com "Apresentador 1:" e "Apresentador 2:" no início de cada fala.
+-   **Certifique-se de que cada apresentador traga informações detalhadas e insights aprofundados sobre o tópico discutido, não apenas um resumo superficial.**
 -   Não use marcadores ou numeração na parte do diálogo.
 -   Faça a conversa fluir naturalmente.
 -   Inclua TODAS as notícias fornecidas, mas agrupadas por tema quando apropriado.
