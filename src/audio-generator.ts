@@ -18,8 +18,7 @@ interface WavConversionOptions {
 }
 
 interface ScriptParts {
-  part1: string;
-  part2: string;
+  parts: string[];
 }
 
 class AudioGenerator {
@@ -103,27 +102,96 @@ class AudioGenerator {
   }
 
   private splitScript(scriptContent: string): ScriptParts {
-    console.log('📝 Dividindo roteiro em duas partes...');
+    console.log('📝 Dividindo roteiro em múltiplas partes...');
     
     const lines = scriptContent.split('\n');
     const totalLines = lines.length;
-    const midPoint = Math.floor(totalLines / 2);
     
-    // Procurar por um ponto lógico para dividir (procurar por uma linha que contenha "João:" ou "Maria:")
-    let splitIndex = midPoint;
-    for (let i = midPoint; i < lines.length; i++) {
-      if (lines[i].includes('João:') || lines[i].includes('Maria:') || lines[i].includes('Apresentador 1:') || lines[i].includes('Apresentador 2:')) {
-        splitIndex = i;
+    // Encontrar todas as linhas que contêm mudanças de apresentador
+    const presenterLines: number[] = [];
+    for (let i = 0; i < lines.length; i++) {
+      if (lines[i].includes('Apresentador 1:') || lines[i].includes('Apresentador 2:') || 
+          lines[i].includes('João:') || lines[i].includes('Maria:')) {
+        presenterLines.push(i);
+      }
+    }
+    
+    console.log(`📊 Encontradas ${presenterLines.length} mudanças de apresentador`);
+    
+    // Dividir em 4-6 partes baseado nas mudanças de apresentador
+    const targetParts = Math.min(6, Math.max(4, Math.ceil(presenterLines.length / 3)));
+    const partSize = Math.ceil(presenterLines.length / targetParts);
+    
+    const parts: string[] = [];
+    let currentPartStart = 0;
+    
+    for (let i = 0; i < targetParts; i++) {
+      const partEnd = Math.min((i + 1) * partSize, presenterLines.length);
+      const startLine = presenterLines[currentPartStart];
+      const endLine = presenterLines[partEnd - 1] || lines.length - 1;
+      
+      // Incluir todas as linhas até a próxima mudança de apresentador
+      const partLines = lines.slice(startLine, endLine + 1);
+      const partContent = partLines.join('\n');
+      
+      if (partContent.trim()) {
+        parts.push(partContent);
+        console.log(`📝 Parte ${i + 1}: ${partContent.length} caracteres`);
+      }
+      
+      currentPartStart = partEnd;
+      
+      // Se chegamos ao final, parar
+      if (partEnd >= presenterLines.length) {
         break;
       }
     }
     
-    const part1 = lines.slice(0, splitIndex).join('\n');
-    const part2 = lines.slice(splitIndex).join('\n');
+    // Se não conseguimos dividir adequadamente, fazer divisão simples por tamanho
+    if (parts.length < 3) {
+      console.log('⚠️ Divisão por apresentador não foi suficiente, dividindo por tamanho...');
+      return this.splitScriptBySize(scriptContent);
+    }
     
-    console.log(`📊 Parte 1: ${part1.length} caracteres, Parte 2: ${part2.length} caracteres`);
+    console.log(`✅ Roteiro dividido em ${parts.length} partes`);
+    return { parts };
+  }
+
+  private splitScriptBySize(scriptContent: string): ScriptParts {
+    console.log('📝 Dividindo roteiro por tamanho...');
     
-    return { part1, part2 };
+    const lines = scriptContent.split('\n');
+    const totalLines = lines.length;
+    const targetParts = 5; // Dividir em 5 partes
+    const linesPerPart = Math.ceil(totalLines / targetParts);
+    
+    const parts: string[] = [];
+    
+    for (let i = 0; i < targetParts; i++) {
+      const startLine = i * linesPerPart;
+      const endLine = Math.min((i + 1) * linesPerPart, totalLines);
+      
+      // Procurar por um ponto lógico para dividir (mudança de apresentador)
+      let actualEndLine = endLine;
+      for (let j = endLine; j < Math.min(endLine + 10, totalLines); j++) {
+        if (lines[j].includes('Apresentador 1:') || lines[j].includes('Apresentador 2:') || 
+            lines[j].includes('João:') || lines[j].includes('Maria:')) {
+          actualEndLine = j;
+          break;
+        }
+      }
+      
+      const partLines = lines.slice(startLine, actualEndLine);
+      const partContent = partLines.join('\n');
+      
+      if (partContent.trim()) {
+        parts.push(partContent);
+        console.log(`📝 Parte ${i + 1}: ${partContent.length} caracteres`);
+      }
+    }
+    
+    console.log(`✅ Roteiro dividido em ${parts.length} partes por tamanho`);
+    return { parts };
   }
 
   private convertToWav(rawData: string, mimeType: string): Buffer {
@@ -343,8 +411,7 @@ class AudioGenerator {
   }
 
   public async generatePodcast(): Promise<void> {
-    let tempAudioPart1Path: string | null = null;
-    let tempAudioPart2Path: string | null = null;
+    const tempAudioPaths: string[] = [];
     let concatListPath: string | null = null;
 
     try {
@@ -362,16 +429,28 @@ class AudioGenerator {
       const scriptContent = await fs.promises.readFile(scriptFilename, 'utf-8');
       console.log('📝 Roteiro carregado com sucesso');
 
-      // Dividir o roteiro em duas partes
-      const { part1, part2 } = this.splitScript(scriptContent);
+      // Dividir o roteiro em múltiplas partes
+      const { parts } = this.splitScript(scriptContent);
+
+      console.log(`🎙️ Gerando áudio para ${parts.length} partes...`);
 
       // Gerar áudio para cada parte
-      tempAudioPart1Path = await this.generateAudioPart(part1, 'parte1');
-      tempAudioPart2Path = await this.generateAudioPart(part2, 'parte2');
+      for (let i = 0; i < parts.length; i++) {
+        const partName = `parte${i + 1}`;
+        console.log(`🎙️ Processando ${partName} (${i + 1}/${parts.length})...`);
+        
+        const tempAudioPath = await this.generateAudioPart(parts[i], partName);
+        tempAudioPaths.push(tempAudioPath);
+        
+        // Pequena pausa entre gerações para evitar sobrecarga da API
+        if (i < parts.length - 1) {
+          console.log('⏳ Aguardando 2 segundos antes da próxima parte...');
+          await this.sleep(2000);
+        }
+      }
 
       // Criar lista de concatenação
-      const audioPartsToConcatenate = [tempAudioPart1Path, tempAudioPart2Path];
-      concatListPath = await this.createConcatList(audioPartsToConcatenate);
+      concatListPath = await this.createConcatList(tempAudioPaths);
 
       // Concatenar os arquivos
       const date = this.getCurrentDate();
@@ -389,11 +468,8 @@ class AudioGenerator {
       process.exit(1);
     } finally {
       // Limpeza de todos os arquivos temporários
-      if (tempAudioPart1Path) {
-        await this.cleanupTempFiles(tempAudioPart1Path);
-      }
-      if (tempAudioPart2Path) {
-        await this.cleanupTempFiles(tempAudioPart2Path);
+      for (const tempAudioPath of tempAudioPaths) {
+        await this.cleanupTempFiles(tempAudioPath);
       }
       if (concatListPath) {
         await this.cleanupTempFiles(concatListPath);
