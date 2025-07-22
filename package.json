@@ -11,6 +11,8 @@
     "scraper:gizmodo": "ts-node src/scraper-gizmodo-index.ts",
     "scraper:all": "ts-node src/scrapers-index.ts",
     "translate": "ts-node src/translator-index.ts",
+    "translate:gemini": "ts-node src/translator-gemini-index.ts",
+    "test:gemini": "ts-node src/test-gemini-translation.ts",
     "podcast": "ts-node src/podcast-generator-index.ts",
     "audio": "ts-node src/audio-generator-index.ts",
     "video": "ts-node src/merge-audio-image-index.ts",

@@ -50,8 +50,8 @@ nvm alias default 22
 
 1. Crie um projeto no Google Cloud Console
 2. Habilite as seguintes APIs:
-   - Google Cloud Translation API
-   - Google AI Studio (Gemini)
+   - Google Cloud Translation API (para tradução tradicional)
+   - Google AI Studio (Gemini) - **Recomendado para tradução econômica**
    - Google Cloud Text-to-Speech API
    - YouTube Data API v3
 3. Crie uma conta de serviço e baixe o arquivo JSON de credenciais
@@ -65,9 +65,25 @@ cp env.example .env
 # Edite o arquivo .env com suas configurações
 GOOGLE_API_KEY=sua-api-key-aqui
 GOOGLE_CLOUD_PROJECT_ID=seu-project-id-aqui
+GEMINI_API_KEY=sua-chave-do-gemini-aqui
 ```
 
-**Nota:** O tradutor usa o arquivo `podcast-tech-news-key.json`, enquanto o gerador de podcast e o gerador de áudio usam a `GOOGLE_API_KEY`.
+**Nota:** 
+- O tradutor original usa o arquivo `podcast-tech-news-key.json`
+- O tradutor Gemini usa a `GEMINI_API_KEY` (mais econômico)
+- O gerador de podcast e o gerador de áudio usam a `GOOGLE_API_KEY`
+
+### 🚀 Configurando Gemini AI para Tradução Econômica
+
+Para usar o Gemini AI (97.5% mais barato que Google Translate):
+
+1. Acesse [Google AI Studio](https://makersuite.google.com/app/apikey)
+2. Faça login e crie uma API Key
+3. Adicione no `.env`: `GEMINI_API_KEY=sua-chave-aqui`
+4. Teste a conexão: `npm run test:gemini`
+5. Use para tradução: `npm run translate:gemini`
+
+Veja mais detalhes em [GEMINI_TRANSLATION.md](./GEMINI_TRANSLATION.md)
 
 ### 🔐 Autorização do YouTube
 
@@ -739,7 +755,9 @@ O tradutor usa as seguintes configurações padrão:
 ### Scripts disponíveis:
 
 - `npm run scraper` - Executa apenas o scraper (coleta notícias)
-- `npm run translate` - Executa apenas o tradutor (traduz notícias)
+- `npm run translate` - Executa apenas o tradutor (traduz notícias usando Google Translate)
+- `npm run translate:gemini` - Executa o tradutor usando Gemini AI (mais econômico)
+- `npm run test:gemini` - Testa a conexão com Gemini AI
 - `npm run podcast` - Gera roteiro do podcast usando Gemini AI
 - `npm run audio` - Converte roteiro em arquivo de áudio MP3
 - `npm run video` - Gera vídeo MP4 para YouTube (áudio + imagem)

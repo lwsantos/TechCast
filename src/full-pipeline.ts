@@ -6,6 +6,7 @@ import { AudioGenerator } from './audio-generator';
 import { AudioImageMerger } from './merge-audio-image';
 import { YouTubeUploader } from './upload_to_youtube';
 import * as dotenv from 'dotenv';
+import { TechCrunchTranslatorGemini } from './translator-gemini';
 
 // Carrega variáveis de ambiente
 dotenv.config();
@@ -13,7 +14,8 @@ dotenv.config();
 class FullPipeline {
   private scraper: TechCrunchScraper;
   private scraperGizmodo: GizmodoScraper;
-  private translator: TechCrunchTranslator;
+  //private translator: TechCrunchTranslator;
+  private translator: TechCrunchTranslatorGemini;
   private podcastGenerator: PodcastGenerator;
   private audioGenerator: AudioGenerator;
   private videoMerger: AudioImageMerger;
@@ -30,7 +32,8 @@ class FullPipeline {
       delay: 3000, // 3 segundos entre requisições
       timeout: 30000 // 30 segundos de timeout
     });
-    this.translator = new TechCrunchTranslator();
+    //this.translator = new TechCrunchTranslator();
+    this.translator = new TechCrunchTranslatorGemini();
     this.podcastGenerator = new PodcastGenerator();
     this.audioGenerator = new AudioGenerator();
     this.videoMerger = new AudioImageMerger();
