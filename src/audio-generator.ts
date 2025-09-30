@@ -6,6 +6,7 @@ import { exec } from 'child_process';
 import { promisify } from 'util';
 import mime from 'mime';
 import { sendTelegramMessage } from './telegram-provider';
+import { getTodayISODate } from './utils/date-helper';
 
 dotenv.config();
 
@@ -42,11 +43,7 @@ class AudioGenerator {
   }
 
   private getCurrentDate(): string {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
+    return getTodayISODate()
   }
 
   private getScriptFilename(): string {
@@ -108,49 +105,20 @@ class AudioGenerator {
     const totalLines = lines.length;
     
     // Encontrar todas as linhas que contêm mudanças de apresentador
+    let partsTemp: string[] = [];
+    const parts: string[] = [];
     const presenterLines: number[] = [];
     for (let i = 0; i < lines.length; i++) {
-      if (lines[i].includes('Apresentador 1:') || lines[i].includes('Apresentador 2:') || 
-          lines[i].includes('João:') || lines[i].includes('Maria:')) {
+      if (lines[i].includes('Apresentador 1:') || lines[i].includes('Apresentador 2:')) {
+        partsTemp.push(lines[i]);
         presenterLines.push(i);
+
+        if (partsTemp.length >= 14) {
+          parts.push(partsTemp.join('\n'));
+          partsTemp = [];
+        }
+
       }
-    }
-    
-    console.log(`📊 Encontradas ${presenterLines.length} mudanças de apresentador`);
-    
-    // Dividir em 4-6 partes baseado nas mudanças de apresentador
-    const targetParts = Math.min(6, Math.max(4, Math.ceil(presenterLines.length / 3)));
-    const partSize = Math.ceil(presenterLines.length / targetParts);
-    
-    const parts: string[] = [];
-    let currentPartStart = 0;
-    
-    for (let i = 0; i < targetParts; i++) {
-      const partEnd = Math.min((i + 1) * partSize, presenterLines.length);
-      const startLine = presenterLines[currentPartStart];
-      const endLine = presenterLines[partEnd - 1] || lines.length - 1;
-      
-      // Incluir todas as linhas até a próxima mudança de apresentador
-      const partLines = lines.slice(startLine, endLine + 1);
-      const partContent = partLines.join('\n');
-      
-      if (partContent.trim()) {
-        parts.push(partContent);
-        console.log(`📝 Parte ${i + 1}: ${partContent.length} caracteres`);
-      }
-      
-      currentPartStart = partEnd;
-      
-      // Se chegamos ao final, parar
-      if (partEnd >= presenterLines.length) {
-        break;
-      }
-    }
-    
-    // Se não conseguimos dividir adequadamente, fazer divisão simples por tamanho
-    if (parts.length < 3) {
-      console.log('⚠️ Divisão por apresentador não foi suficiente, dividindo por tamanho...');
-      return this.splitScriptBySize(scriptContent);
     }
     
     console.log(`✅ Roteiro dividido em ${parts.length} partes`);
@@ -333,7 +301,8 @@ class AudioGenerator {
             
             if (!fileExtension) {
               fileExtension = 'wav';
-              buffer = this.convertToWav(inlineData.data || '', inlineData.mimeType || '');
+              const wavBuffer = this.convertToWav(inlineData.data || '', inlineData.mimeType || '');
+              buffer = Buffer.from(wavBuffer);
             }
             
             writeStream.write(buffer);

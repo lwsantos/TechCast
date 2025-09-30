@@ -8,6 +8,8 @@ services:
       - ./output:/app/output
       # Montar arquivo .env para facilitar configuração
       - ./.env:/app/.env
+      # Montar diretório de credenciais
+      - ./credentials:/app/credentials
     environment:
       - NODE_ENV=production
       - TZ=America/Sao_Paulo

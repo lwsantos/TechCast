@@ -4,6 +4,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as dotenv from 'dotenv';
 import { sendTelegramMessage } from './telegram-provider';
+import { getTodayISODate } from './utils/date-helper';
 
 dotenv.config();
 
@@ -17,11 +18,7 @@ class AudioImageMerger {
   }
 
   private getCurrentDate(): string {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
+    return getTodayISODate()
   }
 
   private async checkFileExists(filePath: string): Promise<boolean> {
