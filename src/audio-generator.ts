@@ -113,7 +113,7 @@ class AudioGenerator {
         partsTemp.push(lines[i]);
         presenterLines.push(i);
 
-        if (partsTemp.length >= 14) {
+        if (partsTemp.length >= 8) {
           parts.push(partsTemp.join('\n'));
           partsTemp = [];
         }
@@ -281,8 +281,8 @@ class AudioGenerator {
         ];
 
         const response = await this.ai.models.generateContentStream({
-          model,
-          config,
+        model,
+        config,
           contents,
         });
 
